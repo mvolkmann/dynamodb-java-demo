@@ -74,6 +74,14 @@ public class Demo {
         }
     }
 
+    void printDogs() {
+        Iterator<Dog> results = dogsTable.scan().items().iterator();
+        while (results.hasNext()) {
+            Dog dog = results.next();
+            System.out.println(">>> " + dog);
+        }
+    }
+
     void renameDog(int id, String newName) {
         Dog dog = getDog(id);
         dog.setName(newName);
@@ -82,14 +90,6 @@ public class Demo {
         } catch (DynamoDbException e) {
             System.err.println("addDog: " + e.getMessage());
             System.exit(1);
-        }
-    }
-
-    void printDogs() {
-        Iterator<Dog> results = dogsTable.scan().items().iterator();
-        while (results.hasNext()) {
-            Dog dog = results.next();
-            System.out.println(">>> " + dog);
         }
     }
 }
