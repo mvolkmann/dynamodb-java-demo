@@ -9,12 +9,8 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
-import software.amazon.awssdk.services.dynamodb.model.ListTablesResponse;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DogService {
 
@@ -26,26 +22,12 @@ public class DogService {
                 .endpointDiscoveryEnabled(true)
                 .credentialsProvider(ProfileCredentialsProvider.create())
                 .build();
-        ListTablesResponse tables = client.listTables();
-
         DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
                 .dynamoDbClient(client)
                 .build();
         dogsTable =
                 enhancedClient.table("Dogs", TableSchema.fromBean(Dog.class));
-
-        // addDog("Maisey", "Treeing Walker Coonhound");
-        // deleteDog(4);
-        // System.out.println(getDog(1));
-        // renameDog(1, "Fireball");
-        // printDogs();
     }
-
-    /*
-    public static void main(String[] args) {
-        new Demo();
-    }
-    */
 
     public String add(String name, String breed) {
         UUID uuid = UUID.randomUUID();
@@ -99,13 +81,16 @@ public class DogService {
         return dogsTable.scan().items().iterator();
     }
 
+    /**
+     * Returns a list of Dog objects sorted in ascending order on their names.
+     */
     public List<Dog> getAllList() {
-        List<Dog> list = new ArrayList<>();
+        SortedSet<Dog> set = new TreeSet<>();
         Iterator<Dog> iter = this.getAllIterator();
         while (iter.hasNext()) {
-            list.add(iter.next());
+            set.add(iter.next());
         }
-        return list;
+        return new ArrayList<>(set);
     }
 
     public void printAll() {

@@ -4,7 +4,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 @DynamoDbBean
-public class Dog {
+public class Dog implements Comparable<Dog> {
 
     private String id;
     private String name;
@@ -17,6 +17,11 @@ public class Dog {
         this.id = id;
         this.name = name;
         this.breed = breed;
+    }
+
+    @Override
+    public int compareTo(Dog other) {
+        return this.name.compareTo(other.name);
     }
 
     public String getBreed() {

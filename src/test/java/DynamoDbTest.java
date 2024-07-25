@@ -22,7 +22,7 @@ public class DynamoDbTest {
         ListTablesResponse tables = client.listTables();
         List<String> tableNames = tables.tableNames();
         assertEquals(1, tableNames.size());
-        assertEquals("Dogs", tableNames.get(0));
+        assertEquals("Dogs", tableNames.getFirst());
     }
 
     @Test
@@ -30,23 +30,25 @@ public class DynamoDbTest {
         DogService dogService = new DogService();
 
         dogService.deleteAll();
-        dogService.add("Oscar", "German Shorthaired Pointer");
-        dogService.add("Comet", "Whippet");
+        String oscarId = dogService.add("Oscar", "German Shorthaired Pointer");
+        String cometId = dogService.add("Comet", "Whippet");
         //dogService.printAll();
 
         List<Dog> list = dogService.getAllList();
         assertEquals(2, list.size());
-        Dog oscar = list.get(0);
-        assertEquals("Oscar", oscar.getName());
-        Dog comet = list.get(1);
+        Dog comet = list.getFirst();
         assertEquals("Comet", comet.getName());
+        assertEquals(cometId, comet.getId());
+        Dog oscar = list.get(1);
+        assertEquals("Oscar", oscar.getName());
+        assertEquals(oscarId, oscar.getId());
 
-        dogService.delete(oscar.getId());
+        dogService.delete(oscarId);
         list = dogService.getAllList();
         assertEquals(1, list.size());
 
-        dogService.rename(comet.getId(), "Fireball");
-        comet = dogService.get(comet.getId());
+        dogService.rename(cometId, "Fireball");
+        comet = dogService.get(cometId);
         assertEquals("Fireball", comet.getName());
     }
 }
